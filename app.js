@@ -5,6 +5,7 @@ import {
     createMovie,
     displayMovies,
 } from "./backend.js";
+import { Movie } from "./movie.js";
 
 const MovieApp = (function () {
     let five = 5;
