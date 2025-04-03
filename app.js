@@ -1,4 +1,10 @@
-import { getMovie } from "./backend.js";
+import {
+    getMovie,
+    updateMovie,
+    removeMovie,
+    createMovie,
+    displayMovies,
+} from "./backend.js";
 
 const MovieApp = (function () {
     let five = 5;
@@ -8,4 +14,5 @@ const MovieApp = (function () {
     };
 })();
 console.log(MovieApp.five);
-getMovie();
+displayMovies();
+// getMovie();
