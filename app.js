@@ -14,7 +14,7 @@ const MovieApp = (function () {
     const watchedMoviesLinks = document.querySelector(".watched-movies-link");
     const planToWatchedLink = document.querySelector(".plan-to-watch-link");
     const moviesSection = document.querySelector(".movies-section");
-    const trackAllMovies = false;
+    let trackAllMovies = false;
 
     async function init() {
         setupEventListener();
