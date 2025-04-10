@@ -21,11 +21,38 @@
                     </li>
                 </ul>
             </div>
-            <div class="movies-section"></div>
+            <div class="movies-section">
+                <div class="movies-div"></div>
+                <div class="add-button-div">
+                    <button class="add-btn">Add New Movie</button>
+                </div>
+            </div>
         </div>
     </body>
+
+    <!-- Template -->
     <template>
-        <div class="movie-card"></div>
+        <div class="movie-card">
+            <div class="movie-card-title-div">
+                <span class="title">Title:</span>
+                <span class="card-title">Card Title</span>
+            </div>
+
+            <div class="movie-card-genre-div">
+                <span class="title">Genre:</span>
+                <div class="genre-buttons"></div>
+            </div>
+
+            <div class="movie-card-rating-div">
+                <span class="rating">Rating:</span>
+                <span class="card-rating">Card Rating</span>
+            </div>
+
+            <div class="movie-card-watched-div">
+                <span class="watched">Watched:</span>
+                <span class="card-watched">No</span>
+            </div>
+        </div>
     </template>
     <script type="module" src="app.js"></script>
 </html>

@@ -13,7 +13,8 @@ const MovieApp = (function () {
     const allMoviesLinks = document.querySelector(".all-movies-link");
     const watchedMoviesLinks = document.querySelector(".watched-movies-link");
     const planToWatchedLink = document.querySelector(".plan-to-watch-link");
-    const moviesSection = document.querySelector(".movies-section");
+    const moviesDiv = document.querySelector(".movies-div");
+    const addBtn = document.querySelector(".add-btn");
     let trackAllMovies = false;
 
     async function init() {
@@ -33,13 +34,17 @@ const MovieApp = (function () {
         planToWatchedLink.addEventListener("click", () => {
             trackAllMovies = false;
         });
+
+        addBtn.addEventListener("click", (e) => {
+            console.log(e.target);
+        });
     }
 
     async function renderMoviesCards() {
-        moviesSection.innerHTML = "";
+        moviesDiv.innerHTML = "";
 
-        if (moviesSection.innerHTML === "") {
-            moviesSection.innerHTML =
+        if (moviesDiv.innerHTML === "") {
+            moviesDiv.innerHTML =
                 "<h1 class = 'no-movies-comment'>No Movies</h1>";
         }
 
@@ -47,7 +52,7 @@ const MovieApp = (function () {
             const movieData = await getMovie();
 
             //load movie into the section
-            moviesSection.innerHTML = movieData
+            moviesDiv.innerHTML = movieData
                 .map((movie) => {
                     return cardHtml(movie);
                 })
@@ -58,7 +63,38 @@ const MovieApp = (function () {
     }
 
     function cardHtml(movie) {
-        return `<div> <p>${movie.title}</p> </div>`;
+        return `
+        <div class="movie-card" data-id="${movie.id}">
+        
+            <div class="movie-card-title-div">
+                <span class="title">Title:</span>
+                <span class="card-title">${movie.title}</span>
+            </div>
+
+            <div class="movie-card-genre-div">
+                <span class="title">Genre:</span>
+                <div class="genre-buttons">${movie.genre}</div>
+            </div>
+
+            <div class="movie-card-rating-div">
+                <span class="rating">Rating:</span>
+                <span class="card-rating">${movie.rating}/100</span>
+            </div>
+
+            <div class="movie-card-watched-div">
+                <span class="watched">Watched:</span>
+                <span class="card-watched">${
+                    movie.watched === false ? "No" : "Yes"
+                }</span>
+            </div>
+            <div class="movie-card-edit-remove-div" >
+                <button class="card-edit-btn" >Edit</button>
+                <button class="card-remove-btn" >Remove</button>
+            </div>
+        </div>
+        
+        
+        `;
     }
 
     return { init };
