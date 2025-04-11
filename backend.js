@@ -60,6 +60,7 @@ async function updateMovie(movie) {
 }
 
 async function removeMovie(movie) {
+    console.log(movie);
     try {
         const response = await fetch(
             `https://67ed4a0a4387d9117bbd140e.mockapi.io/api/movies/${movie.id}`,
@@ -69,7 +70,7 @@ async function removeMovie(movie) {
         );
 
         if (response.ok) {
-            alert("Movie Deleted");
+            alert("Deleting...");
         }
     } catch (error) {
         alert(error);

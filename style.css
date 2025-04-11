@@ -64,6 +64,7 @@ body {
     width: 78%;
 }
 
+/* movie card section */
 .movies-div {
     padding: 0.8rem;
     overflow: hidden;
@@ -77,12 +78,15 @@ body {
     /* justify-content: center; */
 }
 .movie-card {
-    width: 140px;
-    height: 140px;
+    width: 170px;
+    height: 170px;
     border: 1px solid white;
     border-radius: 5px;
     padding: 0.5rem;
     font-size: 1.8rem;
+}
+.movie-card div {
+    margin-bottom: 0.5rem;
 }
 .add-button-div {
     margin-top: 1rem;
@@ -98,6 +102,25 @@ body {
     cursor: pointer;
 }
 .add-btn:hover {
+    transform: scale(1.03);
+    transition: 250ms;
+}
+
+.movie-card-edit-remove-div {
+    width: 100%;
+    text-align: center;
+}
+.movie-card-edit-remove-div button {
+    width: 48%;
+    font-size: 1.4rem;
+    color: white;
+    background-color: #040d12;
+    border-radius: 5px;
+    padding: 0.4rem;
+    border: 1px solid white;
+    cursor: pointer;
+}
+.movie-card-edit-remove-div button:hover {
     transform: scale(1.03);
     transition: 250ms;
 }

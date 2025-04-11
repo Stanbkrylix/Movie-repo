@@ -38,6 +38,31 @@ const MovieApp = (function () {
         addBtn.addEventListener("click", (e) => {
             console.log(e.target);
         });
+
+        moviesDiv.addEventListener("click", async (e) => {
+            const target = e.target;
+
+            if (target.classList.contains("card-remove-btn")) {
+                const cardElement = target.parentElement.parentElement;
+                const cardId = cardElement.dataset.id;
+
+                await movieToRemove(cardId);
+                await renderMoviesCards();
+            }
+        });
+    }
+
+    async function movieToRemove(cardId) {
+        try {
+            const movieData = await getMovie();
+            const movieToRemove = movieData.find(
+                (movie) => movie.id === cardId
+            );
+
+            await removeMovie(movieToRemove);
+        } catch (error) {
+            alert(`This error is "${error}"`);
+        }
     }
 
     async function renderMoviesCards() {
