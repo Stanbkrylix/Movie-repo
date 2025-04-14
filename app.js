@@ -15,6 +15,7 @@ const MovieApp = (function () {
     const planToWatchedLink = document.querySelector(".plan-to-watch-link");
     const moviesDiv = document.querySelector(".movies-div");
     const addBtn = document.querySelector(".add-btn");
+
     let trackAllMovies = false;
 
     async function init() {
@@ -36,7 +37,6 @@ const MovieApp = (function () {
         });
 
         addBtn.addEventListener("click", (e) => {
-            console.log(e.target);
             moviesDiv.innerHTML = "";
             moviesDiv.innerHTML = newCardHtml();
         });
@@ -51,7 +51,58 @@ const MovieApp = (function () {
                 await movieToRemove(cardId);
                 await renderMoviesCards();
             }
+
+            if (target.classList.contains("new-card-submit-btn")) {
+                await submitNewCardFunctionality();
+            }
+            if (target.classList.contains("new-card-cancel-btn")) {
+                resetInputs();
+                await renderMoviesCards();
+            }
         });
+    }
+
+    function resetInputs() {
+        const newMovieTitle = (document.querySelector(".new-card-title").value =
+            "");
+        const newMovieGenre = (document.querySelector(
+            ".new-genre-buttons"
+        ).value = "");
+        const newMovieRating = (document.querySelector(
+            ".new-card-rating"
+        ).value = "");
+        const newMovieWatchedCheckbox = (document.querySelector(
+            ".new-card-watched-checkbox"
+        ).checked = false);
+    }
+
+    async function submitNewCardFunctionality() {
+        // new card movies
+        const newMovieTitle = document.querySelector(".new-card-title");
+        const newMovieGenre = document.querySelector(".new-genre-buttons");
+        const newMovieRating = document.querySelector(".new-card-rating");
+        const newMovieWatchedCheckbox = document.querySelector(
+            ".new-card-watched-checkbox"
+        );
+
+        if (
+            newMovieTitle.value === "" ||
+            newMovieGenre.value === "" ||
+            newMovieRating.value === ""
+        ) {
+            alert("Please fill out all text input fields");
+            return;
+        }
+
+        const movie = new Movie(
+            newMovieTitle.value,
+            newMovieGenre.value,
+            newMovieRating.value,
+            newMovieWatchedCheckbox.checked
+        );
+        resetInputs();
+        await createMovie(movie);
+        await renderMoviesCards();
     }
 
     async function movieToRemove(cardId) {

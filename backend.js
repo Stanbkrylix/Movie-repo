@@ -26,7 +26,7 @@ async function getMovie() {
 
 async function createMovie(movie) {
     try {
-        const response = fetch(
+        const response = await fetch(
             `https://67ed4a0a4387d9117bbd140e.mockapi.io/api/movies`,
             {
                 method: "POST",
@@ -34,7 +34,8 @@ async function createMovie(movie) {
                 body: JSON.stringify(movie),
             }
         );
-        const movieData = response.json();
+
+        const movieData = await response.json();
         return movieData;
     } catch (error) {
         alert(error);
