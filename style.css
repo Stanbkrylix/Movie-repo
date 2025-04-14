@@ -124,3 +124,67 @@ body {
     transform: scale(1.03);
     transition: 250ms;
 }
+
+/* New Movie Card */
+.new-movie-card {
+    border: 1px solid white;
+    padding: 0.8rem;
+    border-radius: 0.4rem;
+    margin: 0 auto;
+    margin-top: 15rem;
+    width: 250px;
+    height: 280px;
+    text-align: center;
+}
+
+.new-movie-card h1 {
+    margin-bottom: 0.8rem;
+}
+.new-movie-card div {
+    margin-bottom: 0.5rem;
+}
+.new-movie-card div span {
+    font-size: 1.5rem;
+}
+.new-movie-card div input {
+    width: 100%;
+    border: none;
+    border-radius: 0.4rem;
+    padding: 0.3rem;
+    font-size: 1.6rem;
+}
+.new-movie-card div input:focus {
+    outline: none;
+}
+.new-card-watched-checkbox {
+    cursor: pointer;
+    /* width: 10px; */
+}
+
+.new-movie-card div button {
+    width: 40%;
+    font-size: 1.7rem;
+    border: 1px solid white;
+    padding: 0.3rem;
+    border-radius: 0.4rem;
+    background-color: #040d12;
+    color: white;
+    cursor: pointer;
+}
+/* Animations */
+
+.slide-fade-in {
+    opacity: 0;
+    transform: translateY(120px);
+    animation: slideFadeIn 0.8s ease-out forwards;
+}
+@keyframes slideFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(120px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

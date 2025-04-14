@@ -37,6 +37,8 @@ const MovieApp = (function () {
 
         addBtn.addEventListener("click", (e) => {
             console.log(e.target);
+            moviesDiv.innerHTML = "";
+            moviesDiv.innerHTML = newCardHtml();
         });
 
         moviesDiv.addEventListener("click", async (e) => {
@@ -119,6 +121,40 @@ const MovieApp = (function () {
         </div>
         
         
+        `;
+    }
+
+    function newCardHtml() {
+        return `
+        
+    <div class="new-movie-card slide-fade-in">
+            <h1 class="new-movie-h1">New Movie</h1>
+        <div class="new-movie-card-title-div">
+            <span class="new-title">Title:</span>
+            <input class="new-card-title" type="text">
+        </div>
+
+        <div class="new-movie-card-genre-div">
+            <span class="new-title">Genre:</span>
+            <input class="new-genre-buttons" type="text">
+        </div>
+
+        <div class="new-movie-card-rating-div">
+            <span class="new-rating">Rating:</span>
+            <input class="new-card-rating" type="number">
+        </div>
+
+        <div class="new-movie-card-watched-div">
+            <span class="new-watched">Watched:</span>
+            <input class="new-card-watched-checkbox" type="checkbox" >
+        </div>
+
+        <div class="new-movie-card-submit-cancel-div">
+            <button class="new-card-submit-btn">Submit</button>
+            <button class="new-card-cancel-btn">Cancel</button>
+        </div>
+
+    </div>
         `;
     }
 
