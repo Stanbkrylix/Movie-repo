@@ -17,6 +17,8 @@ const MovieApp = (function () {
     const addBtn = document.querySelector(".add-btn");
 
     let trackAllMovies = false;
+    let idOfEditCard = null;
+    let genreArray = [];
 
     async function init() {
         setupEventListener();
@@ -52,12 +54,62 @@ const MovieApp = (function () {
                 await renderMoviesCards();
             }
 
+            if (target.classList.contains("card-edit-btn")) {
+                const cardElement = target.parentElement.parentElement;
+                const cardId = cardElement.dataset.id;
+                idOfEditCard = cardId;
+
+                const movieData = await getMovie();
+
+                const intendedMovie = movieData.find(
+                    (movie) => movie.id === cardId
+                );
+
+                moviesDiv.innerHTML = "";
+                moviesDiv.innerHTML = renderEditCardHtml(intendedMovie);
+            }
+
             if (target.classList.contains("new-card-submit-btn")) {
                 await submitNewCardFunctionality();
             }
+
             if (target.classList.contains("new-card-cancel-btn")) {
                 resetInputs();
                 await renderMoviesCards();
+            }
+
+            if (target.classList.contains("edit-card-submit-btn")) {
+                await submitEditCardFunctionality();
+            }
+        });
+
+        moviesDiv.addEventListener("change", (e) => {
+            const target = e.target;
+
+            if (target.classList.contains("new-genre-select")) {
+                const selectedValue = target.value;
+
+                // if selectedValue is empty, and if array does not already have value
+                if (
+                    selectedValue !== "" &&
+                    !genreArray.includes(selectedValue)
+                ) {
+                    console.log(genreArray.includes(selectedValue));
+                    genreArray.push(selectedValue);
+
+                    target.value = "";
+
+                    const infoSpan = target.nextElementSibling;
+
+                    if (
+                        infoSpan &&
+                        infoSpan.classList.contains("genre-count-info")
+                    ) {
+                        infoSpan.textContent = `${genreArray.length} ${
+                            genreArray.length === 1 ? "genre" : "genres"
+                        } selected`;
+                    }
+                }
             }
         });
     }
@@ -65,21 +117,49 @@ const MovieApp = (function () {
     function resetInputs() {
         const newMovieTitle = (document.querySelector(".new-card-title").value =
             "");
-        const newMovieGenre = (document.querySelector(
-            ".new-genre-buttons"
-        ).value = "");
+        // const newMovieGenre = (document.querySelector(
+        //     ".new-genre-buttons"
+        // ).value = "");
         const newMovieRating = (document.querySelector(
             ".new-card-rating"
         ).value = "");
         const newMovieWatchedCheckbox = (document.querySelector(
             ".new-card-watched-checkbox"
         ).checked = false);
+
+        genreArray = [];
+    }
+
+    async function submitEditCardFunctionality() {
+        const editCardTitle = document.querySelector(".edit-card-title");
+        const editCardRating = document.querySelector(".edit-card-rating");
+        const editCardWatched = document.querySelector(
+            ".edit-card-watched-checkbox"
+        );
+
+        if (editCardRating.value === "" || editCardTitle.value === "")
+            alert("All Fields must have a value");
+
+        const movieData = await getMovie();
+        const intendedMovie = movieData.find(
+            (movie) => movie.id === idOfEditCard
+        );
+
+        intendedMovie.title = editCardTitle.value;
+        intendedMovie.rating = editCardRating.value;
+        intendedMovie.watched = editCardWatched.checked;
+
+        await updateMovie(intendedMovie);
+        await renderMoviesCards();
+
+        // To reset value
+        editCardTitle.value = "";
+        editCardRating.value = "";
     }
 
     async function submitNewCardFunctionality() {
         // new card movies
         const newMovieTitle = document.querySelector(".new-card-title");
-        const newMovieGenre = document.querySelector(".new-genre-buttons");
         const newMovieRating = document.querySelector(".new-card-rating");
         const newMovieWatchedCheckbox = document.querySelector(
             ".new-card-watched-checkbox"
@@ -87,8 +167,8 @@ const MovieApp = (function () {
 
         if (
             newMovieTitle.value === "" ||
-            newMovieGenre.value === "" ||
-            newMovieRating.value === ""
+            newMovieRating.value === "" ||
+            genreArray.length === 0
         ) {
             alert("Please fill out all text input fields");
             return;
@@ -96,7 +176,7 @@ const MovieApp = (function () {
 
         const movie = new Movie(
             newMovieTitle.value,
-            newMovieGenre.value,
+            genreArray,
             newMovieRating.value,
             newMovieWatchedCheckbox.checked
         );
@@ -151,7 +231,11 @@ const MovieApp = (function () {
 
             <div class="movie-card-genre-div">
                 <span class="title">Genre:</span>
-                <div class="genre-buttons">${movie.genre}</div>
+                <div class="genre-buttons">${movie.genre
+                    .map((g) => {
+                        return `<span class="genre-tag" >${g}</span>`;
+                    })
+                    .join("")}</div>
             </div>
 
             <div class="movie-card-rating-div">
@@ -186,8 +270,18 @@ const MovieApp = (function () {
         </div>
 
         <div class="new-movie-card-genre-div">
-            <span class="new-title">Genre:</span>
-            <input class="new-genre-buttons" type="text">
+            <label for="genre-select"><span class="new-title">Genre:</span></label>
+            <select class="new-genre-select" id="genre-select">
+                <option value="">-- Select a genre --</option>
+                <option value="Action">Action</option>
+                <option value="Comedy">Comedy</option>
+                <option value="Drama">Drama</option>
+                <option value="Horror">Horror</option>
+                <option value="Sci-Fi">Sci-Fi</option>
+                <option value="Romance">Romance</option>
+                <option value="Documentary">Documentary</option>
+            </select>
+            <span class="genre-count-info" style="margin-left: 3.5rem; padding:0.5rem; font-style: italic;"></span>     
         </div>
 
         <div class="new-movie-card-rating-div">
@@ -206,6 +300,57 @@ const MovieApp = (function () {
         </div>
 
     </div>
+        `;
+    }
+
+    function renderEditCardHtml(movie) {
+        return `
+        <div class="edit-movie-card slide-fade-in">
+    <h1 class="edit-movie-h1">Edit Movie</h1>
+
+    <div class="edit-movie-card-title-div">
+        <span class="edit-title">Title:</span>
+        <input class="edit-card-title" type="text" value ="${movie.title}">
+    </div>
+
+    <div class="edit-movie-card-genre-div">
+        <label for="edit-genre-select"><span class="edit-title">Genre:</span></label>
+        <select class="edit-genre-select" id="edit-genre-select">
+            <option value="">-- Select a genre --</option>
+            <option value="Action">Action</option>
+            <option value="Comedy">Comedy</option>
+            <option value="Drama">Drama</option>
+            <option value="Horror">Horror</option>
+            <option value="Sci-Fi">Sci-Fi</option>
+            <option value="Romance">Romance</option>
+            <option value="Documentary">Documentary</option>
+        </select>
+        <span class="genre-count-info" style="margin-left: 3.5rem; padding:0.5rem; font-style: italic;">
+            ${movie.genre.length} ${
+            movie.genre.length > 1 ? "genres" : "genre"
+        } selected
+        </span>
+    </div>
+
+    <div class="edit-movie-card-rating-div">
+        <span class="edit-rating">Rating:</span>
+        <input class="edit-card-rating" type="number" value="${movie.rating}">
+    </div>
+
+    <div class="edit-movie-card-watched-div">
+        <span class="edit-watched">Watched:</span>
+        <input class="edit-card-watched-checkbox" type="checkbox" ${
+            movie.watched ? "checked" : ""
+        } >
+    </div>
+
+    <div class="edit-movie-card-submit-cancel-div">
+        <button class="edit-card-submit-btn">Edit</button>
+        <button class="edit-card-cancel-btn">Cancel</button>
+    </div>
+</div>
+
+        
         `;
     }
 
