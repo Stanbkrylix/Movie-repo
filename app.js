@@ -13,10 +13,13 @@ const MovieApp = (function () {
     const allMoviesLinks = document.querySelector(".all-movies-link");
     const watchedMoviesLinks = document.querySelector(".watched-movies-link");
     const planToWatchedLink = document.querySelector(".plan-to-watch-link");
+    const titleSection = document.querySelector(".title-section h1");
     const moviesDiv = document.querySelector(".movies-div");
     const addBtn = document.querySelector(".add-btn");
 
     let trackAllMovies = false;
+    let trackWatchedMovies = false;
+    let trackPlanToWatchMovies = false;
     let idOfEditCard = null;
     let genreArray = [];
 
@@ -26,16 +29,28 @@ const MovieApp = (function () {
     }
 
     function setupEventListener() {
-        allMoviesLinks.addEventListener("click", () => {
+        allMoviesLinks.addEventListener("click", async () => {
             trackAllMovies = true;
+            trackPlanToWatchMovies = false;
+            trackWatchedMovies = false;
+
+            titleSection.textContent = "All Movies";
+            await renderMoviesCards();
         });
 
-        watchedMoviesLinks.addEventListener("click", () => {
+        watchedMoviesLinks.addEventListener("click", async () => {
+            trackWatchedMovies = true;
             trackAllMovies = false;
+            trackPlanToWatchMovies = false;
+
+            await renderWatchedMovies();
         });
 
-        planToWatchedLink.addEventListener("click", () => {
+        planToWatchedLink.addEventListener("click", async () => {
+            trackPlanToWatchMovies = true;
             trackAllMovies = false;
+            trackWatchedMovies = false;
+            await renderPlanToWatchedMovies();
         });
 
         addBtn.addEventListener("click", (e) => {
@@ -67,6 +82,10 @@ const MovieApp = (function () {
 
                 moviesDiv.innerHTML = "";
                 moviesDiv.innerHTML = renderEditCardHtml(intendedMovie);
+            }
+
+            if (target.classList.contains("edit-card-cancel-btn")) {
+                await renderMoviesCards();
             }
 
             if (target.classList.contains("new-card-submit-btn")) {
@@ -114,6 +133,32 @@ const MovieApp = (function () {
         });
     }
 
+    async function renderWatchedMovies() {
+        titleSection.textContent = "Watched Movies ";
+        moviesDiv.innerHTML = "";
+
+        const watchedMoviesArray = await getMovie();
+
+        const movies = watchedMoviesArray.filter(
+            (movie) => movie.watched === true
+        );
+
+        moviesDiv.innerHTML = movies.map((movie) => cardHtml(movie)).join("");
+    }
+
+    async function renderPlanToWatchedMovies() {
+        titleSection.innerHTML = "Movies To Watch";
+        moviesDiv.innerHTML = "";
+
+        const moviesToFilter = await getMovie();
+        console.log(moviesToFilter);
+
+        moviesDiv.innerHTML = moviesToFilter
+            .filter((movie) => movie.watched === false)
+            .map((movie) => cardHtml(movie))
+            .join("");
+    }
+
     function resetInputs() {
         const newMovieTitle = (document.querySelector(".new-card-title").value =
             "");
@@ -137,8 +182,10 @@ const MovieApp = (function () {
             ".edit-card-watched-checkbox"
         );
 
-        if (editCardRating.value === "" || editCardTitle.value === "")
+        if (editCardRating.value === "" || editCardTitle.value === "") {
             alert("All Fields must have a value");
+            return;
+        }
 
         const movieData = await getMovie();
         const intendedMovie = movieData.find(
@@ -150,7 +197,15 @@ const MovieApp = (function () {
         intendedMovie.watched = editCardWatched.checked;
 
         await updateMovie(intendedMovie);
-        await renderMoviesCards();
+
+        // to track where movies are being rendered base on their filtered details
+        if (trackAllMovies) {
+            await renderMoviesCards();
+        } else if (trackWatchedMovies) {
+            await renderWatchedMovies();
+        } else if (trackPlanToWatchMovies) {
+            await renderPlanToWatchedMovies();
+        }
 
         // To reset value
         editCardTitle.value = "";
