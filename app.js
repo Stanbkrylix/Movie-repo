@@ -17,7 +17,7 @@ const MovieApp = (function () {
     const moviesDiv = document.querySelector(".movies-div");
     const addBtn = document.querySelector(".add-btn");
 
-    let trackAllMovies = false;
+    let trackAllMovies = true;
     let trackWatchedMovies = false;
     let trackPlanToWatchMovies = false;
     let idOfEditCard = null;
@@ -66,7 +66,7 @@ const MovieApp = (function () {
                 const cardId = cardElement.dataset.id;
 
                 await movieToRemove(cardId);
-                await renderMoviesCards();
+                await renderMoviesByFilter();
             }
 
             if (target.classList.contains("card-edit-btn")) {
@@ -197,8 +197,21 @@ const MovieApp = (function () {
         intendedMovie.watched = editCardWatched.checked;
 
         await updateMovie(intendedMovie);
+        console.log({
+            trackAllMovies,
+            trackPlanToWatchMovies,
+            trackWatchedMovies,
+        });
 
         // to track where movies are being rendered base on their filtered details
+        renderMoviesByFilter();
+
+        // To reset value
+        editCardTitle.value = "";
+        editCardRating.value = "";
+    }
+
+    async function renderMoviesByFilter() {
         if (trackAllMovies) {
             await renderMoviesCards();
         } else if (trackWatchedMovies) {
@@ -206,10 +219,6 @@ const MovieApp = (function () {
         } else if (trackPlanToWatchMovies) {
             await renderPlanToWatchedMovies();
         }
-
-        // To reset value
-        editCardTitle.value = "";
-        editCardRating.value = "";
     }
 
     async function submitNewCardFunctionality() {
