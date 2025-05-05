@@ -17,11 +17,15 @@ const MovieApp = (function () {
     const moviesDiv = document.querySelector(".movies-div");
     const addBtn = document.querySelector(".add-btn");
 
-    let trackAllMovies = true;
-    let trackWatchedMovies = false;
-    let trackPlanToWatchMovies = false;
+    let activeFilter = "all";
     let idOfEditCard = null;
     let genreArray = [];
+
+    const filterRenderers = {
+        all: renderMoviesCards,
+        watched: renderWatchedMovies,
+        plan: renderPlanToWatchedMovies,
+    };
 
     async function init() {
         setupEventListener();
@@ -30,32 +34,27 @@ const MovieApp = (function () {
 
     function setupEventListener() {
         allMoviesLinks.addEventListener("click", async () => {
-            trackAllMovies = true;
-            trackPlanToWatchMovies = false;
-            trackWatchedMovies = false;
+            activeFilter = "all";
 
-            titleSection.textContent = "All Movies";
-            await renderMoviesCards();
+            await renderMoviesByFilter();
         });
 
         watchedMoviesLinks.addEventListener("click", async () => {
-            trackWatchedMovies = true;
-            trackAllMovies = false;
-            trackPlanToWatchMovies = false;
-
-            await renderWatchedMovies();
+            activeFilter = "watched";
+            await renderMoviesByFilter();
         });
 
         planToWatchedLink.addEventListener("click", async () => {
-            trackPlanToWatchMovies = true;
-            trackAllMovies = false;
-            trackWatchedMovies = false;
-            await renderPlanToWatchedMovies();
+            activeFilter = "plan";
+            await renderMoviesByFilter();
         });
 
         addBtn.addEventListener("click", (e) => {
             moviesDiv.innerHTML = "";
             moviesDiv.innerHTML = newCardHtml();
+
+            // for if add new movie is click again
+            resetInputs();
         });
 
         moviesDiv.addEventListener("click", async (e) => {
@@ -85,7 +84,7 @@ const MovieApp = (function () {
             }
 
             if (target.classList.contains("edit-card-cancel-btn")) {
-                await renderMoviesCards();
+                await renderMoviesByFilter();
             }
 
             if (target.classList.contains("new-card-submit-btn")) {
@@ -94,7 +93,7 @@ const MovieApp = (function () {
 
             if (target.classList.contains("new-card-cancel-btn")) {
                 resetInputs();
-                await renderMoviesCards();
+                await renderMoviesByFilter();
             }
 
             if (target.classList.contains("edit-card-submit-btn")) {
@@ -162,9 +161,6 @@ const MovieApp = (function () {
     function resetInputs() {
         const newMovieTitle = (document.querySelector(".new-card-title").value =
             "");
-        // const newMovieGenre = (document.querySelector(
-        //     ".new-genre-buttons"
-        // ).value = "");
         const newMovieRating = (document.querySelector(
             ".new-card-rating"
         ).value = "");
@@ -197,11 +193,6 @@ const MovieApp = (function () {
         intendedMovie.watched = editCardWatched.checked;
 
         await updateMovie(intendedMovie);
-        console.log({
-            trackAllMovies,
-            trackPlanToWatchMovies,
-            trackWatchedMovies,
-        });
 
         // to track where movies are being rendered base on their filtered details
         renderMoviesByFilter();
@@ -212,13 +203,8 @@ const MovieApp = (function () {
     }
 
     async function renderMoviesByFilter() {
-        if (trackAllMovies) {
-            await renderMoviesCards();
-        } else if (trackWatchedMovies) {
-            await renderWatchedMovies();
-        } else if (trackPlanToWatchMovies) {
-            await renderPlanToWatchedMovies();
-        }
+        // object of render methods
+        await filterRenderers[activeFilter]();
     }
 
     async function submitNewCardFunctionality() {
@@ -263,8 +249,9 @@ const MovieApp = (function () {
     }
 
     async function renderMoviesCards() {
-        moviesDiv.innerHTML = "";
+        titleSection.textContent = "All Movies";
 
+        moviesDiv.innerHTML = "";
         if (moviesDiv.innerHTML === "") {
             moviesDiv.innerHTML =
                 "<h1 class = 'no-movies-comment'>No Movies</h1>";
