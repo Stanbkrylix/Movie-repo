@@ -58,6 +58,7 @@ const Login = (function () {
 
         if (answer.toLowerCase() === "y") {
             registerToggle.disabled = false;
+            loginBtn.disabled = true;
             return;
         } else {
             return;
@@ -79,7 +80,13 @@ const Login = (function () {
             );
 
             if (findExistUserAndPass) {
-                console.log("exist");
+                console.log("login Successfull");
+
+                // To switch to the movies app html
+                window.location.href = `index.html?userId=${findExistUserAndPass.id}`;
+
+                // to store userId temporarely
+                localStorage.setItem("userId", findExistUserAndPass.id);
             } else {
                 alert(`Username and Password Do not Exist,`);
                 enabledRegisterBtn();
@@ -103,6 +110,8 @@ const Login = (function () {
             await createUser(loginInfoObject);
             await getUsers();
             resetInputs();
+            loginBtn.disabled = false;
+            registerToggle.disabled = true;
         });
     }
 

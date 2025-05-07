@@ -21,6 +21,9 @@ const MovieApp = (function () {
     let idOfEditCard = null;
     let genreArray = [];
 
+    // To retrieve user id which was temporarily saved
+    const currentUserId = localStorage.getItem("userId");
+
     const filterRenderers = {
         all: renderMoviesCards,
         watched: renderWatchedMovies,
@@ -73,7 +76,7 @@ const MovieApp = (function () {
                 const cardId = cardElement.dataset.id;
                 idOfEditCard = cardId;
 
-                const movieData = await getMovie();
+                const movieData = await getMovie(currentUserId);
 
                 const intendedMovie = movieData.find(
                     (movie) => movie.id === cardId
@@ -136,7 +139,7 @@ const MovieApp = (function () {
         titleSection.textContent = "Watched Movies ";
         moviesDiv.innerHTML = "";
 
-        const watchedMoviesArray = await getMovie();
+        const watchedMoviesArray = await getMovie(currentUserId);
 
         const movies = watchedMoviesArray.filter(
             (movie) => movie.watched === true
@@ -149,7 +152,7 @@ const MovieApp = (function () {
         titleSection.innerHTML = "Movies To Watch";
         moviesDiv.innerHTML = "";
 
-        const moviesToFilter = await getMovie();
+        const moviesToFilter = await getMovie(currentUserId);
         console.log(moviesToFilter);
 
         moviesDiv.innerHTML = moviesToFilter
@@ -183,7 +186,7 @@ const MovieApp = (function () {
             return;
         }
 
-        const movieData = await getMovie();
+        const movieData = await getMovie(currentUserId);
         const intendedMovie = movieData.find(
             (movie) => movie.id === idOfEditCard
         );
@@ -228,8 +231,10 @@ const MovieApp = (function () {
             newMovieTitle.value,
             genreArray,
             newMovieRating.value,
-            newMovieWatchedCheckbox.checked
+            newMovieWatchedCheckbox.checked,
+            currentUserId
         );
+
         resetInputs();
         await createMovie(movie);
         await renderMoviesCards();
@@ -237,7 +242,7 @@ const MovieApp = (function () {
 
     async function movieToRemove(cardId) {
         try {
-            const movieData = await getMovie();
+            const movieData = await getMovie(currentUserId);
             const movieToRemove = movieData.find(
                 (movie) => movie.id === cardId
             );
@@ -258,8 +263,11 @@ const MovieApp = (function () {
         }
 
         try {
-            const movieData = await getMovie();
+            const movieData = await getMovie(currentUserId);
 
+            if (!movieData) return;
+            console.log("MovieData ", movieData);
+            console.log(movieData);
             //load movie into the section
             moviesDiv.innerHTML = movieData
                 .map((movie) => {
@@ -405,9 +413,9 @@ const MovieApp = (function () {
         `;
     }
 
+    displayMovies(currentUserId);
     return { init };
 })();
 // console.log(MovieApp.five);
-displayMovies();
 MovieApp.init();
 // getMovie();

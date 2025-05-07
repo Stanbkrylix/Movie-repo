@@ -1,23 +1,31 @@
-async function data() {
-    const response = await fetch(
-        `https://67ed4a0a4387d9117bbd140e.mockapi.io/api/movies`
-    );
-    const movieData = await response.json();
-    return movieData;
+async function data(userId) {
+    try {
+        const response = await fetch(
+            `https://67ed4a0a4387d9117bbd140e.mockapi.io/api/movies?userId=${userId}`
+        );
+        if (!response.ok) throw new Error("Movie could not be found");
+
+        const movieData = await response.json();
+        return movieData;
+    } catch (error) {
+        alert(error);
+    }
 }
 
-async function displayMovies() {
+async function displayMovies(userId) {
     try {
-        const movieData = await data();
+        const movieData = await data(userId);
         console.log(movieData);
     } catch (error) {
         alert(`The Error: ${error}`);
     }
 }
 
-async function getMovie() {
+async function getMovie(userId) {
     try {
-        const movieData = await data();
+        const movieData = await data(userId);
+
+        // if (!movieData) throw new Error("Movie could not be found");
         return movieData;
     } catch (error) {
         alert(error);
@@ -80,3 +88,15 @@ async function removeMovie(movie) {
 
 // async function
 export { getMovie, displayMovies, removeMovie, createMovie, updateMovie };
+
+/*
+{
+    "title": "Lojan",
+    "genre": [
+      "Drama"
+    ],
+    "rating": "60",
+    "watched": true,
+    "id": "1"
+  }
+ */
