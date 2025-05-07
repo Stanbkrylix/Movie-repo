@@ -2,7 +2,6 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    /* font-size: 62.5%; */
 }
 html {
     font-size: 62.5%;
@@ -21,8 +20,6 @@ body {
     padding: 1rem;
     border-radius: 0.5rem;
     background-color: #092635;
-    /* display: flex;
-    flex-direction: column; */
 }
 .auth-container h2 {
     color: white;
@@ -106,19 +103,12 @@ body {
     text-decoration: none;
     color: white;
 }
-.tab-links li a:hover {
-    /* transform: scale(1.01);
-    background-color: #fff;
-    color: #040d12; */
-}
+
 .tab-links li:hover {
     transform: scale(1.03);
-    /* background-color: #fff;
-    color: #040d12; */
 }
 
 .movies-section {
-    /* border: 1px solid white; */
     width: 78%;
 }
 

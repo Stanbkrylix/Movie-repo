@@ -85,7 +85,7 @@ const Login = (function () {
                 // To switch to the movies app html
                 window.location.href = `index.html?userId=${findExistUserAndPass.id}`;
 
-                // to store userId temporarely
+                // to store userId temporarily
                 localStorage.setItem("userId", findExistUserAndPass.id);
             } else {
                 alert(`Username and Password Do not Exist,`);

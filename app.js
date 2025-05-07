@@ -39,7 +39,6 @@ const MovieApp = (function () {
     function setupEventListener() {
         allMoviesLinks.addEventListener("click", async () => {
             activeFilter = "all";
-
             await renderMoviesByFilter();
         });
 
@@ -121,7 +120,6 @@ const MovieApp = (function () {
                     selectedValue !== "" &&
                     !genreArray.includes(selectedValue)
                 ) {
-                    console.log(genreArray.includes(selectedValue));
                     genreArray.push(selectedValue);
 
                     target.value = "";
@@ -159,7 +157,7 @@ const MovieApp = (function () {
         moviesDiv.innerHTML = "";
 
         const moviesToFilter = await getMovie(currentUserId);
-        console.log(moviesToFilter);
+        // console.log(moviesToFilter);
 
         moviesDiv.innerHTML = moviesToFilter
             .filter((movie) => movie.watched === false)
@@ -272,8 +270,7 @@ const MovieApp = (function () {
             const movieData = await getMovie(currentUserId);
 
             if (!movieData) return;
-            console.log("MovieData ", movieData);
-            console.log(movieData);
+
             //load movie into the section
             moviesDiv.innerHTML = movieData
                 .map((movie) => {
@@ -419,9 +416,7 @@ const MovieApp = (function () {
         `;
     }
 
-    displayMovies(currentUserId);
     return { init };
 })();
-// console.log(MovieApp.five);
+
 MovieApp.init();
-// getMovie();
