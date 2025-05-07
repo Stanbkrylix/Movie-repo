@@ -16,6 +16,7 @@ const MovieApp = (function () {
     const titleSection = document.querySelector(".title-section h1");
     const moviesDiv = document.querySelector(".movies-div");
     const addBtn = document.querySelector(".add-btn");
+    const logoutBtn = document.querySelector(".logout-btn");
 
     let activeFilter = "all";
     let idOfEditCard = null;
@@ -58,6 +59,11 @@ const MovieApp = (function () {
 
             // for if add new movie is click again
             resetInputs();
+        });
+
+        logoutBtn.addEventListener("click", (e) => {
+            localStorage.removeItem("userId");
+            window.location.href = `login.html`;
         });
 
         moviesDiv.addEventListener("click", async (e) => {
